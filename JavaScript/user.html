@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+  <h1 id="name"></h1>
+  <p id="anlmal"></p>
+  <p id="fruit"></p>
+
+  <script>
+    const nemeElement = document.querySelector("#name");
+    const anlmalElement = document.querySelector("#anlmal");
+    const fruitElement = document.querySelector("#fruit");
+
+    let name = prompt("이름을 적어주세요");
+    nemeElement.textContent = name;
+
+    let anlmal = prompt("좋아하는 동물은 무엇인가요?");
+    anlmalElement.textContent = `좋아하는 동물은 ${anlmal}고,`
+
+    let fruit = prompt("좋아하는 과일도 적어주세요?");
+    fruitElement.textContent = `좋아하는 과일은 ${fruit}에요!`
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>설문조사 양식</title>
+  <script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>설문조사 양식</h1>
+    <p>모든 항목에 빠짐없이 체크해주십시오.</p>
+  </header>
+
+  <hr>
+
+  <main>
+    <form>
+      <fieldset>
+        <legend>신청서</legend>
+        <table>
+          <tbody>
+            <tr>
+              <th>입양 동물 : </th>
+              <td><input id="animalName" type="text" name="animalName" readonly></td>
+            </tr>
+            <tr>
+              <th>신청자 이름 : </th>
+              <td> <input type="text" id="memberName" name="memberName" required> </td>
+            </tr>
+            <tr>
+              <th>연락처 : </th>
+              <td> 
+                <input type="text" id="phone1" value="010" maxlength="3" required>
+                -
+                <input type="text" id="phone2" maxlength="4" required>
+                -
+                <input type="text"id="phone3" maxlength="4" required>
+              </td>
+            </tr>
+            <tr>
+              <th>이메일 : </th>
+              <td>
+                <input type="text" id="emailId" requried>
+                @
+                <input type="text" id="emailUrl" requried>
+                <select id="selectBox" onchange="updateEmailUrl();">
+                  <option value="">직접 입력</option>
+                  <option value="naver.com">네이버</option>
+                  <option value="gmail.com">구글</option>
+                  <option value="daum.net">다음</option>
+                  <option value="nate.com">네이트</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th id="reasonItem">입양 이유 :</th>
+              <td> <textarea id="adoptReason" name="reason" required></textarea> </td>
+            </tr>
+            <tr>
+              <th>반려동물 유무 :</th>
+              <td>  
+                <input type="radio" name="hasPet" id="has-yes" value="있음">
+                <label for="has-yes">있음</label>
+                <input type="radio" name="hasPet" id="has-no" value="없음">
+                <label for="has-no">없음</label>
+              </td>
+            </tr>
+            <tr>
+              <th>입양 경험 :</th>
+              <td>  
+                <input type="radio" name="adoptExp" id="exp-yes" value="있음">
+                <label for="exp-yes">있음</label> 
+                <input type="radio" name="adoptExp" id="exp-no" value="없음">
+                <label for="exp-no">없음</label>									
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </fieldset>
+      <input type="submit">
+    </form>
+  </main>
+
+  <hr>
+
+  <footer>
+    <p>입력하느라 수고하셨습니다.</p>
+  </footer>
+
+  <script>
+    // select박스 선택 시 자동 입력
+    function updateEmailUrl(){
+			
+      var selectBox = $("#selectBox");
+      var emailUrl = $("#emailUrl");
+      var selectVal = selectBox.val();
+
+      if(selectVal != ""){
+        emailUrl.val(selectVal);
+        emailUrl.prop("readonly", true);
+        }else{
+        emailUrl.val(selectVal);
+        emailUrl.prop("readonly", false);
+        }
+    }
+  </script>
+</body>
+</html>
