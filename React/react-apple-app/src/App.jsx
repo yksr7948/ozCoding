@@ -1,26 +1,35 @@
-import styled from 'styled-components'
-import Nav from './components/Nav'
-import Banner from './components/Banner'
-import './App.css'
+import { Routes, Route, Outlet } from 'react-router-dom';
+import Nav from './components/Nav';
+import LoginPage from './pages/LoginPage';
+import MainPage from './pages/MainPage';
+import DetailPage from './pages/DetailPage';
+import SearchPage from './pages/SearchPage';
+import './App.css';
+
+const Layout = () => {
+  return (
+    <>
+      <Nav></Nav>
+
+      <Outlet></Outlet>
+    </>
+  )
+}
 
 function App() {
 
   return (
     <>
-      <Container>
-        <Nav></Nav>
-        <Banner></Banner>
-      </Container>
+      <Routes>
+        <Route path='/' element={<Layout></Layout>}>
+          <Route index element={<LoginPage></LoginPage>}></Route>
+          <Route path='main' element={<MainPage></MainPage>}></Route>
+          <Route path=':movieId' element={<DetailPage></DetailPage>}></Route>
+          <Route path='search' element={<SearchPage></SearchPage>}></Route>
+        </Route>
+      </Routes>
     </>
   )
 }
-
-// 메인영역 styled
-const Container = styled.main`
-  position: relative;
-  display: block;
-  top: 70px;
-  padding: 0 calc(3.5vw + 5px);
-`
 
 export default App
