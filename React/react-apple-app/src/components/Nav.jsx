@@ -1,15 +1,27 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
+import app from "../firebase";
 import styled from "styled-components"
+
+const initalUserData = localStorage.getItem("userData") ? JSON.parse(localStorage.getItem("userData")) : {}
 
 const Nav = () => {
 
   const [show, setShow] = useState("false");
+  // user 정보
+  const [userData, setUserData] = useState(initalUserData);
   // 검색바 입력값 
   const [searchValue, setSearchValue] = useState();
   // react-router-dom에서 제공하는 함수(페이지 이동)
   const navigate = useNavigate();
+
+  // 현재 경로
+  const { pathname } = useLocation();
+
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
   
   // 스크롤 이벤트
   const listener = () => {
@@ -25,6 +37,30 @@ const Nav = () => {
     navigate(`/search?q=${e.target.value}`);
   }
 
+  // 로그인 버튼 클릭시 팝업
+  const handleAuth = () => {
+    signInWithPopup(auth, provider)
+    .then((resilt) => {
+      setUserData(resilt.user);
+      localStorage.setItem("userData", JSON.stringify(resilt.user));
+    })
+    .catch((error) => {
+      alert(error.message);
+    })
+  }
+
+  // 로그인 시 경로 이동
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if(!user) {
+        navigate('/');
+      }else if(user && pathname == "/"){
+        navigate('/main');
+      }
+    });
+  }, [auth, navigate, pathname])
+  
+
   // 스크롤 이벤트 등록
   useEffect(() => {
     window.addEventListener('scroll', listener);
@@ -33,6 +69,16 @@ const Nav = () => {
     }
   }, [])
 
+  // 로그아웃
+  const handleLogOut = () => {
+    signOut(auth).then(() => {
+      setUserData({});
+      localStorage.removeItem("userData");
+    }).catch((error) => {
+      alert(error.message);
+    })
+  }
+
   // return
   return (
     <NavWrapper show={show}>
@@ -40,15 +86,33 @@ const Nav = () => {
         <img alt="logo" src="/images/apple-logo.png" onClick={() => (window.location.href="/")}></img>
       </Logo>
 
-      <Input
-        type="text"
-        className="nav_input"
-        value={searchValue || ""}
-        onChange={handleChange}
-        placeholder="영화를 검색해주세요.">
-      </Input>
+      {pathname === "/" ? (
+        <Login
+          onClick={handleAuth}>
+          LogIn
+        </Login>
+      ):(
+          <Input
+            type="text"
+            className="nav_input"
+            value={searchValue || ""}
+            onChange={handleChange}
+            placeholder="영화를 검색해주세요.">
+          </Input>
+        )
+      }
 
-      <Login>로그인</Login>
+      {pathname !== "/" ? 
+        <Signout>
+          <UserImg src={userData.photoURL} alt={userData.displayName}></UserImg>
+          <DropDown>
+            <span onClick={handleLogOut}>Sign Out</span>
+          </DropDown>
+        </Signout>
+        : 
+        null
+      }
+
     </NavWrapper>
   )
 }
@@ -99,17 +163,57 @@ const Input = styled.input`
 const Login = styled.a`
   background-color: rgba(0, 0, 0, 0.6);
   padding: 8px 16px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   border: 1px solid #f9f9f9;
   border-radius: 4px;
   transition: all 0.2s ease;
+  cursor: pointer;
 
   &:hover{
     background-color: #f9f9f9;
     color: #000;
-    border-color: transparent; 
+    border-color: transparent;
   }
+`
+
+// 로그아웃 styled
+const DropDown = styled.div`
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background: rgb(19, 19, 19);
+  border: 1px solid rgba(151, 151, 151, 0.34);
+  border-radius: 4px;
+  box-shadow: rgb(0 0 0/ 50%) 0px 0px 18px 0px;
+  padding: 10px;
+  font-size: 14px;
+  letter-spacing: 3px;
+  width: 100px;
+  opacity: 0;
+`
+
+const Signout = styled.div`
+  position: relative;
+  height: 48px;
+  width: 48px;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-items: center;
+
+  &:hover{
+    ${DropDown} {
+      opacity: 1;
+      transition-duration: 1s;
+    }
+  }
+`
+const UserImg = styled.img`
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
 `
   
 export default Nav

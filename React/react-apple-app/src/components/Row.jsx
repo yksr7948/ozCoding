@@ -67,8 +67,6 @@ const Row = ({title, id, fetchUrl}) => {
         navigation
         pagination={{ clickable: true }}
         scrollbar={{ draggable: true }}
-        onSwiper={(swiper) => console.log(swiper)}
-        onSlideChange={() => console.log('slide change')}
       >
         {/* 영화 하나 데이터 */}
         <div id={id} className='row_posters'>
